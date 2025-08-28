@@ -1,19 +1,25 @@
+// scripts/deploy.js
 const hre = require("hardhat");
 
 async function main() {
-  // Get the contract factory for our mock StakingToken
   const StakingToken = await hre.ethers.getContractFactory("StakingToken");
-  // Deploy it with an initial supply of 1,000,000 tokens
   const stakingToken = await StakingToken.deploy(hre.ethers.utils.parseEther("1000000"));
   await stakingToken.deployed();
   console.log(`Mock Staking Token ($ASTR) deployed to: ${stakingToken.address}`);
 
-  // Get the contract factory for AstraVest
   const AstraVest = await hre.ethers.getContractFactory("AstraVest");
-  // Deploy it, passing the StakingToken's address to the constructor
   const astraVest = await AstraVest.deploy(stakingToken.address);
   await astraVest.deployed();
   console.log(`AstraVest contract deployed to: ${astraVest.address}`);
+
+  // --- ADD THIS PART ---
+  // Add a default staking pool right after deployment
+  console.log("Adding a default staking pool (Pool 0) with 20% APR...");
+  // The APR is 2000 for 20.00%
+  const tx = await astraVest.addPool(2000); 
+  await tx.wait(); // Wait for the transaction to be mined
+  console.log("Default pool added successfully!");
+  // --- END OF ADDED PART ---
 }
 
 main().catch((error) => {
