@@ -9,8 +9,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 contract AstraVest is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    // --- State Variables ---
-
     IERC20 public immutable stakingToken; // The token users will stake (e.g., $ASTR)
     
     // Struct to store information about each user's stake
